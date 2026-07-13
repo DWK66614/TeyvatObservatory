@@ -89,3 +89,5 @@ Output at `release/`, double-click `Teyvat Observatory Setup x.x.x.exe` to insta
 ## 📄 License
 
 MIT
+
+##Developed by Rain, ClaudeCode, and Deepseek-v4-pro
