@@ -1,7 +1,7 @@
 {
   "name": "genshin-impact-tracker",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Teyvat Observatory - Genshin Impact Player Data Query Tool",
   "author": "Teyvat Observatory",
   "type": "module",
@@ -24,7 +24,7 @@
     "appId": "com.teyvat.observatory",
     "productName": "Teyvat Observatory",
     "directories": {
-      "output": "release"
+      "output": "releases"
     },
     "files": [
       "dist/**/*",

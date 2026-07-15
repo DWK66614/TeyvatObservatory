@@ -1,32 +1,29 @@
-import { useState, useCallback, useMemo, Component } from 'react'
-import StarBackground from './components/StarBackground'
-import Sidebar from './components/Sidebar'
-import PlayerOverview from './components/PlayerOverview'
-import CharacterShowcase from './components/CharacterShowcase'
-import SpiralAbyss from './components/SpiralAbyss'
-import ImaginariumTheater from './components/ImaginariumTheater'
-import StatsPanel from './components/StatsPanel'
+import { useState, useCallback, useRef, Component } from 'react'
+import { ThemeProvider, useTheme } from './utils/theme'
+import Header from './components/Header'
+import HeroBanner from './components/HeroBanner'
+import CharacterGallery from './components/CharacterGallery'
+import AbyssReport from './components/AbyssReport'
+import TheaterReport from './components/TheaterReport'
+import StatsDashboard from './components/StatsDashboard'
 import LoadingSpinner from './components/LoadingSpinner'
 import WelcomeScreen from './components/WelcomeScreen'
 import { fetchPlayerData, parsePlayerInfo, parseShowcaseCharacters } from './api/enka'
 import { AlertCircle } from 'lucide-react'
 
-const TABS = [
-  { id: 'overview',   label: '概览', icon: 'Home' },
-  { id: 'characters', label: '角色', icon: 'Users' },
-  { id: 'abyss',      label: '深渊', icon: 'Zap' },
-  { id: 'stats',      label: '面板', icon: 'BarChart3' },
-]
-
 function ErrorDisplay({ message, onRetry }) {
+  const { colors: c } = useTheme()
   return (
-    <div className="page-enter">
-      <div className="card p-10 text-center" style={{ borderColor: 'rgba(224,85,74,0.2)' }}>
-        <AlertCircle className="w-10 h-10 mx-auto mb-4" style={{ color: '#e0554a' }} />
-        <h3 className="text-base font-semibold mb-2" style={{ color: '#e0554a' }}>查询失败</h3>
-        <p className="text-sm text-dust" style={{ color: '#8b8aa6' }}>{message}</p>
+    <div className="page-enter max-w-lg mx-auto pt-20">
+      <div className="card p-10 text-center" style={{ borderColor: c.errorBorder }}>
+        <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
+             style={{ background: c.errorBg }}>
+          <AlertCircle className="w-7 h-7" style={{ color: c.errorText }} />
+        </div>
+        <h3 className="text-base font-semibold mb-2" style={{ color: c.errorText }}>查询失败</h3>
+        <p className="text-sm mb-5" style={{ color: c.textMuted }}>{message}</p>
         {onRetry && (
-          <button onClick={onRetry} className="btn-ghost text-sm px-6 py-2.5 mt-5">重新查询</button>
+          <button onClick={onRetry} className="btn-ghost text-sm px-6 py-2.5">重新查询</button>
         )}
       </div>
     </div>
@@ -40,11 +37,11 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center" style={{ background: '#080c1d' }}>
-          <div className="card p-12 text-center max-w-md" style={{ borderColor: 'rgba(224,85,74,0.2)' }}>
-            <span className="text-5xl block mb-4">⚠️</span>
-            <h2 className="text-base font-semibold mb-2" style={{ color: '#e0554a' }}>应用出错了</h2>
-            <p className="text-sm text-dust mb-4">{this.state.error?.message || '未知错误'}</p>
+        <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
+          <div className="card p-12 text-center max-w-md" style={{ borderColor: 'var(--error-border)' }}>
+            <span className="text-5xl block mb-4">⚠</span>
+            <h2 className="text-base font-semibold mb-2" style={{ color: 'var(--error-text)' }}>应用出错了</h2>
+            <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{this.state.error?.message || '未知错误'}</p>
             <button onClick={() => window.location.reload()} className="btn-primary text-sm px-6 py-2.5">刷新页面</button>
           </div>
         </div>
@@ -54,24 +51,26 @@ class ErrorBoundary extends Component {
   }
 }
 
-export default function App() {
+function AppContent() {
+  const { colors: c } = useTheme()
   const [playerInfo, setPlayerInfo] = useState(null)
   const [characters, setCharacters] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [searchedUid, setSearchedUid] = useState(null)
-  const [activeTab, setActiveTab] = useState('overview')
+  const mainRef = useRef(null)
 
   const handleSearch = useCallback(async (uid, forceRefresh = false) => {
     setLoading(true); setError(null); setSearchedUid(uid)
-    if (!forceRefresh) setActiveTab('overview')
     try {
       const data = await fetchPlayerData(uid, forceRefresh)
       if (!data) { setError('未能获取到数据'); setPlayerInfo(null); setCharacters([]); return }
       const info = parsePlayerInfo(data)
       const chars = parseShowcaseCharacters(data)
-      console.log('[App] Player:', !!info, '| Characters:', chars.length, '| Raw avatars:', data?.avatarInfoList?.length || 0)
       setPlayerInfo(info); setCharacters(chars)
+      setTimeout(() => {
+        mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
     } catch (err) {
       console.error('查询失败:', err)
       setError(err.message || '查询失败'); setPlayerInfo(null); setCharacters([])
@@ -80,73 +79,71 @@ export default function App() {
 
   const hasData = !!playerInfo
 
-  const tabContent = useMemo(() => {
-    if (loading) return <LoadingSpinner message={`正在观测 UID ${searchedUid} ...`} />
-    if (error) return <ErrorDisplay message={error} onRetry={searchedUid ? () => handleSearch(searchedUid) : null} />
-    if (!hasData) return <WelcomeScreen />
-    switch (activeTab) {
-      case 'overview':
-        return (
-          <div className="page-enter space-y-5">
-            <PlayerOverview playerInfo={playerInfo} characters={characters} />
-            <ImaginariumTheater playerInfo={playerInfo} />
-            <SpiralAbyss playerInfo={playerInfo} characters={characters} />
-            <CharacterShowcase characters={characters} />
-          </div>
-        )
-      case 'characters': return <div className="page-enter"><CharacterShowcase characters={characters} /></div>
-      case 'abyss': return <div className="page-enter"><SpiralAbyss playerInfo={playerInfo} characters={characters} /></div>
-      case 'stats': return <div className="page-enter"><StatsPanel characters={characters} /></div>
-      default: return null
-    }
-  }, [loading, error, hasData, activeTab, playerInfo, characters, searchedUid, handleSearch])
-
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen flex" style={{ background: '#080c1d' }}>
-        <StarBackground />
+    <div className="min-h-screen flex flex-col" style={{ background: c.bg }}>
+      <Header
+        onSearch={handleSearch}
+        isLoading={loading}
+        playerInfo={playerInfo}
+        hasData={hasData}
+      />
 
-        {/* Sidebar — fixed left, 240px on desktop */}
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          onSearch={handleSearch}
-          isLoading={loading}
-          tabs={TABS}
-        />
+      <div ref={mainRef} className="flex-1">
+        {loading ? (
+          <div className="pt-16">
+            <LoadingSpinner message={`正在查询 UID ${searchedUid} ...`} />
+          </div>
+        ) : error ? (
+          <ErrorDisplay message={error} onRetry={searchedUid ? () => handleSearch(searchedUid) : null} />
+        ) : !hasData ? (
+          <WelcomeScreen onSearch={handleSearch} />
+        ) : (
+          <div className="page-enter">
+            <div className="max-w-6xl mx-auto px-5 py-8 lg:px-8 lg:py-10 space-y-8">
+              <HeroBanner playerInfo={playerInfo} characters={characters} />
+              <CharacterGallery characters={characters} />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AbyssReport playerInfo={playerInfo} characters={characters} />
+                <TheaterReport playerInfo={playerInfo} />
+              </div>
+              <StatsDashboard characters={characters} />
+            </div>
 
-        {/* Main content area — offset by sidebar width */}
-        <div className="flex-1 flex flex-col min-h-screen lg:ml-60 max-lg:pt-16">
-          <main className="flex-1 px-5 py-8 lg:px-10 lg:py-10 max-w-5xl w-full mx-auto relative z-10">
-            {tabContent}
-
-            {/* Force refresh link */}
-            {searchedUid && !loading && hasData && (
-              <div className="text-center mt-8">
+            {searchedUid && (
+              <div className="text-center pb-8">
                 <button
                   onClick={() => handleSearch(searchedUid, true)}
-                  className="text-xs transition-colors hover:text-starlight"
-                  style={{ color: '#5c5b78' }}
+                  className="text-xs transition-colors hover:text-gold"
+                  style={{ color: c.textFaint }}
                 >
-                  ⟳ 强制刷新
+                  强制刷新数据
                 </button>
               </div>
             )}
-          </main>
-
-          {/* Footer */}
-          <footer className="border-t py-4 text-center relative z-10" style={{ borderColor: 'rgba(112,149,196,0.06)' }}>
-            <p className="text-[10px]" style={{ color: '#3c3b58' }}>
-              Teyvat Observatory · Data Source{' '}
-              <a href="https://enka.network" target="_blank" rel="noopener noreferrer"
-                 className="hover:text-starlight transition-colors" style={{ color: '#5c5b78' }}>
-                Enka.Network
-              </a>{' '}
-              · 仅供学习交流
-            </p>
-          </footer>
-        </div>
+          </div>
+        )}
       </div>
+
+      <footer className="border-t py-5 text-center" style={{ borderColor: c.footerBorder }}>
+        <p className="text-xs" style={{ color: c.footerText }}>
+          原神观测台 · 数据来源{' '}
+          <a href="https://enka.network" target="_blank" rel="noopener noreferrer"
+             className="hover:text-gold transition-colors" style={{ color: c.footerLink }}>
+            Enka.Network
+          </a>
+          {' '}· 仅供学习交流
+        </p>
+      </footer>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </ErrorBoundary>
   )
 }

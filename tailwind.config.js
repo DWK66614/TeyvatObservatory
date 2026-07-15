@@ -7,42 +7,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Astral Atlas palette ──
-        void: {
-          DEFAULT: '#080c1d',   // deepest night sky
-          deep: '#050917',      // even deeper, for shadows
+        cream: {
+          DEFAULT: '#f8f5f0',
+          light: '#fefcf9',
+          dark: '#efe9e0',
         },
-        cosmos: {
-          DEFAULT: '#111633',   // card surfaces
-          light: '#181d42',     // hover state
-          border: 'rgba(112,149,196,0.08)', // subtle nebula-tinted borders
+        paper: {
+          DEFAULT: '#ffffff',
+          tint: '#faf8f5',
+          border: '#e8e1d5',
         },
-        starlight: {
-          DEFAULT: '#edd9a3',   // warm starlight accent
-          light: '#f5e6c0',     // hover / bright
-          dim: '#8a7d5c',       // muted
-          bg: 'rgba(237,217,163,0.06)', // subtle bg
+        ink: {
+          DEFAULT: '#2c2416',
+          muted: '#5c5343',
+          dim: '#8b8170',
+          faint: '#bfb8aa',
         },
-        nebula: {
-          DEFAULT: '#7095c4',   // cool celestial blue
-          light: '#90b0d8',
-          dim: '#4a6280',
-          bg: 'rgba(112,149,196,0.06)',
+        gold: {
+          DEFAULT: '#c8923f',
+          light: '#e0b866',
+          dim: '#9e7432',
+          bg: 'rgba(200,146,63,0.06)',
         },
-        aurora: {
-          DEFAULT: '#4fb8a0',   // teal-green accent
-          bg: 'rgba(79,184,160,0.06)',
+        rust: {
+          DEFAULT: '#b85c3a',
+          light: '#d4785a',
+          bg: 'rgba(184,92,58,0.06)',
         },
-        parchment: {
-          DEFAULT: '#e5e0d5',   // warm off-white text
-          muted: '#9a9590',     // dimmer text
-        },
-        dust: {
-          DEFAULT: '#8b8aa6',   // secondary text
-          dim: '#5c5b78',       // even more muted
+        sage: {
+          DEFAULT: '#5b8c5a',
+          light: '#7aab79',
+          bg: 'rgba(91,140,90,0.06)',
         },
 
-        // ── Element colors (desaturated slightly to fit the palette) ──
+        // Element colors
         pyro:      { DEFAULT: '#e0554a', bg: 'rgba(224,85,74,0.08)' },
         hydro:     { DEFAULT: '#5b9cf5', bg: 'rgba(91,156,245,0.08)' },
         anemo:     { DEFAULT: '#40c9a0', bg: 'rgba(64,201,160,0.08)' },
@@ -52,46 +50,32 @@ export default {
         geo:       { DEFAULT: '#e0b040', bg: 'rgba(224,176,64,0.08)' },
       },
       fontFamily: {
-        display: ['"Cinzel"', '"Noto Serif SC"', 'serif'],
+        display: ['"Noto Serif SC"', 'serif'],
         sans: ['"Noto Sans SC"', '"Microsoft YaHei"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', '"Consolas"', 'monospace'],
       },
+      borderRadius: {
+        'card': '12px',
+      },
+      boxShadow: {
+        'card': '0 1px 3px rgba(44,36,22,0.04), 0 1px 2px rgba(44,36,22,0.03)',
+        'card-hover': '0 4px 16px rgba(44,36,22,0.06), 0 1px 3px rgba(44,36,22,0.04)',
+        'header': '0 1px 0 rgba(44,36,22,0.06)',
+        'gold': '0 2px 12px rgba(200,146,63,0.15)',
+      },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-out',
+        'fade-in': 'fadeIn 0.4s ease-out',
         'slide-up': 'slideUp 0.5s ease-out',
-        'slide-in-left': 'slideInLeft 0.4s ease-out',
-        'constellation': 'constellationPulse 3s ease-in-out infinite',
-        'orbit': 'orbit 20s linear infinite',
-        'orbit-reverse': 'orbitReverse 25s linear infinite',
-        'star-twinkle': 'twinkle 2s ease-in-out infinite',
+        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
+        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
         slideUp: {
           '0%': { transform: 'translateY(16px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-        slideInLeft: {
-          '0%': { transform: 'translateX(-12px)', opacity: '0' },
-          '100%': { transform: 'translateX(0)', opacity: '1' },
-        },
-        constellationPulse: {
-          '0%, 100%': { opacity: '0.3' },
-          '50%': { opacity: '0.6' },
-        },
-        orbit: {
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(360deg)' },
-        },
-        orbitReverse: {
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(-360deg)' },
-        },
-        twinkle: {
-          '0%, 100%': { opacity: '0.2' },
+        pulseSubtle: {
+          '0%, 100%': { opacity: '0.4' },
           '50%': { opacity: '0.8' },
         },
       },
