@@ -1,0 +1,8 @@
+{
+  "appId": "com.teyvat.observatory",
+  "appName": "Teyvat Observatory",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true
+  }
+}
