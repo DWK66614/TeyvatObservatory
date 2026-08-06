@@ -83,6 +83,14 @@ npm run electron:dev
 - 数据来源于Enka.Network
 - 仅供学习交流使用
 
+## 反馈
+
+如在使用软件时遇到问题，可在Github Issues提出意见或发邮件至dmh0306@outlook.com，收到反馈后，将会尽快修复问题
+
+##说明
+
+在编写软件过程中，参考了一些开源项目/软件，如有侵权，请发邮件至dmh0306@outlook.com进行处理
+
 ## 许可证
 
 MIT License
