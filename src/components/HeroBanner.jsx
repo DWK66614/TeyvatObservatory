@@ -27,9 +27,6 @@ export default function HeroBanner({ playerInfo, characters }) {
           <div className="h-36 relative overflow-hidden">
             <img src={nameCardUrl} alt="" className="w-full h-full object-cover opacity-20"
                  onError={e => { e.target.style.display = 'none' }} />
-            <div className="absolute inset-0" style={{
-              background: `linear-gradient(to top, ${c.surface} 0%, ${c.surface}80 50%, transparent 100%)`,
-            }} />
           </div>
         )}
 

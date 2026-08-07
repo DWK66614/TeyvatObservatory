@@ -24,3 +24,5 @@ npm-debug.log*
 
 # Claude Code (local project config)
 .claude/
+releases/
+*.png

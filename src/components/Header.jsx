@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
-import { Search, X, History, Compass, Sun, Moon } from 'lucide-react'
+import { Search, X, History, Compass, Sun, Moon, Home, Sparkles } from 'lucide-react'
 import { useTheme } from '../utils/theme'
 
-export default function Header({ onSearch, isLoading, playerInfo, hasData }) {
+export default function Header({ onSearch, isLoading, playerInfo, hasData, onHome, onGacha, currentView, showSearch = true }) {
   const { colors: c, theme, toggleTheme } = useTheme()
   const [uid, setUid] = useState('')
   const [recentUids, setRecentUids] = useState(() => {
@@ -46,16 +46,46 @@ export default function Header({ onSearch, isLoading, playerInfo, hasData }) {
             </div>
             <div className="hidden sm:block">
               <span className="text-sm font-bold font-display tracking-wide" style={{ color: c.text }}>
-                原神观测台
+                提瓦特观测台
               </span>
               <span className="text-[10px] block leading-none font-display" style={{ color: c.textFaint }}>
-                GENSHIN OBSERVER
+                TEYVAT OBSERVATORY
               </span>
             </div>
           </div>
 
+          {/* Nav */}
+          {(onHome || onGacha) && (
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {onHome && (
+                <button onClick={onHome}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+                        style={{
+                          background: currentView === 'home' ? c.surfaceHover : 'transparent',
+                          color: currentView === 'home' ? c.text : c.textMuted,
+                        }}>
+                  <Home className="w-3.5 h-3.5" />
+                  首页
+                </button>
+              )}
+              {onGacha && (
+                <button onClick={onGacha}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+                        style={{
+                          background: currentView === 'gacha' ? `${c.sage}1a` : 'transparent',
+                          color: currentView === 'gacha' ? c.sage : c.textMuted,
+                          border: `1px solid ${currentView === 'gacha' ? c.sage : 'transparent'}`,
+                        }}>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  祈愿记录
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Search */}
-          <div className="flex-1 max-w-lg mx-auto">
+          {showSearch && (
+            <div className="flex-1 max-w-lg mx-auto">
             <form onSubmit={handleSubmit} className="relative">
               <div className="flex items-stretch rounded-lg overflow-hidden transition-all duration-200"
                    style={{
@@ -107,6 +137,7 @@ export default function Header({ onSearch, isLoading, playerInfo, hasData }) {
               )}
             </form>
           </div>
+          )}
 
           {/* Theme toggle */}
           <button
@@ -117,31 +148,6 @@ export default function Header({ onSearch, isLoading, playerInfo, hasData }) {
           >
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
-
-          {/* Player info when loaded */}
-          <div className="hidden sm:flex items-center gap-3 flex-shrink-0" style={{ minWidth: 120, justifyContent: 'flex-end' }}>
-            {hasData && playerInfo && (
-              <>
-                <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
-                     style={{ background: c.goldBg, border: `1px solid ${c.goldBorder}` }}>
-                  {playerInfo.profilePicture?.iconUrl ? (
-                    <img src={playerInfo.profilePicture.iconUrl} alt="" className="w-full h-full object-cover"
-                         onError={e => { e.target.style.display = 'none' }} />
-                  ) : (
-                    <span className="text-xs" style={{ color: c.gold }}>旅</span>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold truncate" style={{ color: c.text }}>
-                    {playerInfo.nickname}
-                  </div>
-                  <div className="text-[10px] font-mono" style={{ color: c.textFaint }}>
-                    Lv.{playerInfo.level}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
         </div>
       </div>
     </header>

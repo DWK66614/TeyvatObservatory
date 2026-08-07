@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#080c1d" />
+    <title>Teyvat Observatory</title>
+    <!-- Fonts loaded async to avoid blocking render -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+    <style>
+      body { background: #080c1d; color: #e5e0d5; margin: 0; }
+      #preload-check { display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; flex-direction: column; gap: 8px; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div id="preload-check">
+        <p style="color:#edd9a3;font-size:14px;margin:0">Loading...</p>
+        <p id="diag-msg" style="color:#8b8aa6;font-size:11px;margin:0;max-width:280px;text-align:center"></p>
+      </div>
+    </div>
+    <script>
+      // Diagnostic: this runs before the main bundle
+      var diag = document.getElementById('diag-msg');
+      diag.textContent = 'JS engine OK. Loading app...';
+      window.__diag_js_ok = true;
+      // If React doesn't mount within 8 seconds, show error
+      setTimeout(function() {
+        if (document.getElementById('preload-check')) {
+          diag.textContent = 'JS loaded but React did not mount. Check errors above.';
+          diag.style.color = '#e0554a';
+        }
+      }, 8000);
+      // Catch global errors
+      window.onerror = function(msg, url, line, col, err) {
+        diag.textContent = 'Error: ' + msg + ' (line ' + line + ')';
+        diag.style.color = '#e0554a';
+        return false;
+      };
+    </script>
+    <script type="module" crossorigin src="/src/main.jsx"></script>
+  </body>
+</html>

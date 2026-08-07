@@ -1,0 +1,87 @@
+import { Zap } from 'lucide-react'
+import { useTheme } from '../utils/theme'
+
+export default function SpiralAbyss({ playerInfo, characters }) {
+  const { colors: c } = useTheme()
+  const floorIndex = playerInfo?.towerFloorIndex || 0
+  const levelIndex = playerInfo?.towerLevelIndex || 0
+
+  return (
+    <div>
+      <div className="card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center"
+               style={{ background: c.rustBg, border: `1px solid ${c.rustBorder}` }}>
+            <Zap className="w-4 h-4" style={{ color: c.rust }} />
+          </div>
+          <div>
+            <h3 className="section-heading">深境螺旋</h3>
+            <p className="text-[10px] mt-0.5" style={{ color: c.textFaint }}>Spiral Abyss</p>
+          </div>
+          {floorIndex > 0 && (
+            <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded"
+                  style={{ background: c.surfaceSecondary, color: c.textFaint }}>
+              第 {floorIndex} 层
+            </span>
+          )}
+        </div>
+
+        {floorIndex > 0 ? (
+          <div className="p-5 rounded-xl" style={{
+            background: c.rustBg,
+            border: `1px solid ${c.rustBorder}`,
+          }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center"
+                   style={{ background: `${c.rust}18` }}>
+                <span className="text-lg font-bold font-mono" style={{ color: c.rust }}>{floorIndex}</span>
+              </div>
+              <div>
+                <div className="text-sm font-semibold" style={{ color: c.text }}>
+                  深境螺旋 第 {floorIndex} 层
+                </div>
+                {levelIndex > 0 && (
+                  <div className="text-xs mt-0.5" style={{ color: c.textMuted }}>
+                    第 {levelIndex} 间
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mt-5 justify-center">
+              {Array.from({ length: 12 }).map((_, i) => {
+                const reached = (i + 1) <= floorIndex
+                const isCurrent = (i + 1) === floorIndex
+                return (
+                  <div key={i} className="flex flex-col items-center gap-1">
+                    <div className="w-2.5 h-2.5 rounded-full transition-all" style={{
+                      background: reached
+                        ? `radial-gradient(circle, ${c.rust}, ${c.rustLight}80)`
+                        : c.border,
+                      boxShadow: reached
+                        ? `0 0 ${isCurrent ? '8px' : '4px'} ${c.rust}60`
+                        : 'none',
+                      transform: isCurrent ? 'scale(1.3)' : 'scale(1)',
+                    }} />
+                    <span className="text-[8px] font-mono" style={{ color: reached ? c.rust : c.textFaint }}>
+                      {i + 1}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                 style={{ background: c.surfaceSecondary, border: `1px solid ${c.border}` }}>
+              <Zap className="w-5 h-5" style={{ color: c.textFaint }} />
+            </div>
+            <p className="text-sm" style={{ color: c.textSecondary }}>暂无深境螺旋数据</p>
+            <p className="text-xs mt-1" style={{ color: c.textFaint }}>该账号可能未通关深渊或未公开数据</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
