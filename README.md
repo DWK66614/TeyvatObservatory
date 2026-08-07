@@ -120,7 +120,7 @@ npm run electron:build:win
 | 前端 | React 18 + Vite 5 |
 | UI | Tailwind CSS + Lucide Icons |
 | 数据 | Enka.Network API + 米游社API |
-| 加密 | Web Crypto API (AES-256-GCM) |
+| 加密 | 本地加密存储 |
 | 打包 | electron-builder + Inno Setup |
 
 ---
@@ -128,7 +128,7 @@ npm run electron:build:win
 ## 📝 说明
 
 - **数据来源**：UID 查询数据来自 [Enka.Network](https://enka.network)，祈愿记录来自米游社官方接口
-- **隐私保护**：祈愿数据使用 AES-256-GCM 加密存储在本地
+- **隐私保护**：祈愿数据加密存储在本地
 - **仅供学习**：本工具仅供学习交流使用
 
 ---
